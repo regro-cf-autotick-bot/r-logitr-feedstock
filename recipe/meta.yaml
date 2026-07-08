@@ -17,22 +17,42 @@ build:
   rpaths:
     - lib/R/lib/
     - lib/
+  missing_dso_whitelist:
+    - '*/R.dll'        # [win]
+    - '*/Rblas.dll'    # [win]
+    - '*/Rlapack.dll'  # [win]
 
 requirements:
   build:
+    - {{ compiler('c') }}              # [not win]
+    - {{ stdlib('c') }}                # [not win]
+    - {{ compiler('m2w64_c') }}        # [win]
+    - {{ stdlib('m2w64_c') }}          # [not win]
+    - {{ compiler('cxx') }}            # [not win]
+    - {{ compiler('m2w64_cxx') }}      # [win]
+    - {{ posix }}filesystem        # [win]
+    - {{ posix }}make
+    - {{ posix }}sed               # [win]
+    - {{ posix }}coreutils         # [win]
     - {{ posix }}zip               # [win]
     - cross-r-base {{ r_base }}    # [build_platform != target_platform]
   host:
     - r-base
     - r-mass
+    - r-rcpp
+    - r-rcppparallel
     - r-generics
+    - r-mirai
     - r-nloptr
     - r-randtoolbox
     - r-tibble
   run:
     - r-base
     - r-mass
+    - r-rcpp
+    - r-rcppparallel
     - r-generics
+    - r-mirai
     - r-nloptr
     - r-randtoolbox
     - r-tibble
@@ -43,7 +63,8 @@ test:
     - "\"%R%\" -e \"library('logitr')\""  # [win]
 
 about:
-  home: https://github.com/jhelvy/logitr
+  home: https://jhelvy.github.io/logitr/
+  dev_url: https://github.com/jhelvy/logitr
   license: MIT
   summary: Fast estimation of multinomial (MNL) and mixed logit (MXL) models in R. Models can be estimated using "Preference" space or "Willingness-to-pay" (WTP) space utility parameterizations. Weighted models can also be estimated. An option is available to run a parallelized multistart optimization loop with random 
     starting points in each iteration, which is useful for non-convex problems like MXL models or models with WTP space utility parameterizations. The main optimization loop uses the 'nloptr' package to minimize the negative log-likelihood function. Additional functions are available for computing and comparing WTP 
